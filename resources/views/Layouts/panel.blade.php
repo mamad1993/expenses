@@ -234,6 +234,7 @@ hello from outsider
         </div>
     </div>
     <div class="card-body">
+        other changes on mac
         <table id="expenses-table" class="table table-striped table-hover">
             <thead>
             <tr>
