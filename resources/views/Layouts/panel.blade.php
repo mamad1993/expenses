@@ -227,6 +227,7 @@ hello from outsider
     how are u
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
+        table changes
         <div class="card-tools">
             <span class="badge bg-primary">Updated: Today</span>
         </div>
