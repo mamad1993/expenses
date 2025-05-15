@@ -216,6 +216,7 @@
 </head>
 <body>
 changes from windows
+changes from mac
 <div class="dashboard-header">
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
