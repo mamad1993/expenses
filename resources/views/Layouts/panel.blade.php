@@ -215,13 +215,14 @@
     </style>
 </head>
 <body>
-how are u
-I am good
+changes from windows
 <div class="dashboard-header">
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
 </div>
 
+
+another line up
 <div class="card">
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
