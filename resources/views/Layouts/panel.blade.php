@@ -215,15 +215,16 @@
     </style>
 </head>
 <body>
-final test from windows
+changes on windows
 <div class="dashboard-header">
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
 </div>
 
 
-high alert on windows
+altercation on windows
 <div class="card">
+    high alert windows
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
         <div class="card-tools">
