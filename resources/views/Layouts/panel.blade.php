@@ -215,15 +215,14 @@
     </style>
 </head>
 <body>
-final test on mac
+final test from windows
 <div class="dashboard-header">
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
-    hello
 </div>
 
 
-high alert on mac
+high alert on windows
 <div class="card">
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
