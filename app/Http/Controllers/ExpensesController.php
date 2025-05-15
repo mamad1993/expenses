@@ -10,7 +10,9 @@ class ExpensesController extends Controller
     public function index()
     {
 
+
         $expenses = Expenditure::with('category')->get();
+
         return view('expenses.index', compact('expenses'));
 
     }
