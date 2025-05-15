@@ -215,27 +215,21 @@
     </style>
 </head>
 <body>
-last but not least changes on mac
 <div class="dashboard-header">
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
 </div>
 
 
-hello from outsider
+
 <div class="card">
-    how are u
     <div class="card-header">
-        card header changes
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
-        table changes
         <div class="card-tools">
-            other chnages on windows
             <span class="badge bg-primary">Updated: Today</span>
         </div>
     </div>
     <div class="card-body">
-        other changes on mac
         <table id="expenses-table" class="table table-striped table-hover">
             <thead>
             <tr>
