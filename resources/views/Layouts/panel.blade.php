@@ -229,6 +229,7 @@
             <span class="badge bg-primary">Updated: Today</span>
         </div>
     </div>
+    hello from mac
     <div class="card-body">
         <table id="expenses-table" class="table table-striped table-hover">
             <thead>
