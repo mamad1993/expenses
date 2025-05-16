@@ -219,9 +219,7 @@
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
 </div>
-
-
-
+hello from windows
 <div class="card">
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
