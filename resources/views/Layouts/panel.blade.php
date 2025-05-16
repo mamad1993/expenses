@@ -219,7 +219,6 @@
     <h1 class="dashboard-title">Expenses Dashboard</h1>
     <p class="text-muted">Track, manage, and analyze your financial transactions</p>
 </div>
-hello from windows
 <div class="card">
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
@@ -227,7 +226,6 @@ hello from windows
             <span class="badge bg-primary">Updated: Today</span>
         </div>
     </div>
-    hello from mac
     <div class="card-body">
         <table id="expenses-table" class="table table-striped table-hover">
             <thead>
