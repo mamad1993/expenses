@@ -376,13 +376,13 @@
             return temp.textContent || temp.innerText || '';
         }
 
-        // Override DataTables search functionality to handle Persian digits
-        $.extend($.fn.dataTableExt.ofnSearch, {
+
+        /*$.extend($.fn.dataTableExt.ofnSearch, {
             html: function(data) {
                 return normalizePersianDigits(stripHtml(data));
             }
         });
-
+*/
         // Initialize DataTable with special rendering and search handling
         const table = $('#expenses-table').DataTable({
             dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
@@ -460,60 +460,9 @@
             }
         });
 
-        // Create a more comprehensive search function
-        $.fn.dataTable.ext.search = []; // Clear existing search functions
-        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex, rowData, counter) {
-            const searchText = normalizePersianDigits($('div.dataTables_filter input').val().toLowerCase());
 
-            if (!searchText || searchText.trim() === '') {
-                return true;
-            }
 
-            // Check each column in the current row
-            for (let i = 0; i < data.length; i++) {
-                // Get plain text from possibly HTML content and normalize digits
-                let cellData = data[i];
 
-                // Extract text from HTML for special columns
-                if (i === 3 || i === 5 || i === 6) { // Amount, Hours, Date columns
-                    cellData = stripHtml(cellData);
-                }
-
-                // Normalize and convert to lowercase for comparison
-                cellData = normalizePersianDigits(cellData).toLowerCase();
-
-                // Debug what's being searched
-                //console.log(`Column ${i}, Searching "${searchText}" in "${cellData}"`);
-
-                // If search text is found in the cell, return true to include this row
-                if (cellData.indexOf(searchText) !== -1) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
-
-        // Handle search input - directly trigger the custom search
-        $('div.dataTables_filter input').on('keyup', function() {
-            table.draw();
-        });
-
-        // Debug function to display the current data for each cell
-        function debugTableData() {
-            const table = $('#expenses-table').DataTable();
-            table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-                const data = this.data();
-                console.log(`Row ${rowIdx} data:`, data);
-                for (let i = 0; i < data.length; i++) {
-                    const normalized = normalizePersianDigits(stripHtml(data[i]));
-                    console.log(`Column ${i}:`, normalized);
-                }
-            });
-        }
-
-        // Uncomment for debugging
-        // debugTableData();
     });
 </script>
 
