@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expenses Dashboard</title>
+    <title>داشبورد هزینه‌ها</title>
 
     <!-- DataTables and Dependencies -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Persian Font: Vazirmatn -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 
     <style>
         :root {
@@ -25,10 +28,11 @@
         }
 
         body {
-            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
             background-color: #f8f9fc;
             color: #5a5c69;
             padding: 1.5rem;
+            text-align: right;
         }
 
         .dashboard-header {
@@ -80,6 +84,7 @@
             color: #4e73df;
             padding: 0.75rem;
             vertical-align: middle;
+            text-align: right !important;
         }
 
         table.dataTable tbody td {
@@ -117,7 +122,7 @@
         .dt-buttons .btn {
             border-radius: 0.35rem;
             padding: 0.375rem 0.75rem;
-            margin-right: 0.5rem;
+            margin-left: 0.5rem;
             font-size: 0.875rem;
         }
 
@@ -137,7 +142,6 @@
             color: white;
         }
 
-        /* New badge classes for Paid and Due */
         .badge-paid {
             background-color: #1cc88a;
             color: white;
@@ -150,7 +154,7 @@
 
         .amount-cell {
             font-weight: 600;
-            text-align: right;
+            text-align: left;
         }
 
         .amount-expense {
@@ -186,6 +190,7 @@
             transition: all 0.15s ease-in-out !important;
             padding: 0.375rem 0.75rem !important;
             font-size: 0.875rem !important;
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif !important;
         }
 
         .dt-button:hover {
@@ -212,55 +217,97 @@
         .dt-button.buttons-print::before {
             content: "🖨️ ";
         }
+
+        /* RTL-specific adjustments */
+        .dataTables_filter {
+            text-align: left !important;
+        }
+
+        .dataTables_filter input {
+            margin-right: 0.5em !important;
+            margin-left: 0 !important;
+        }
+
+        .dt-buttons {
+            margin-right: 0 !important;
+        }
+
+        /* Fix Persian number alignment in table */
+        .text-end-persian {
+            text-align: left !important;
+        }
+
+        /* Fix header alignment for RTL */
+        .dataTable th {
+            text-align: right !important;
+        }
+
+        /* Fix sorting icons alignment */
+        table.dataTable thead .sorting:after,
+        table.dataTable thead .sorting_asc:after,
+        table.dataTable thead .sorting_desc:after {
+            right: auto;
+            left: 8px;
+        }
     </style>
 </head>
 <body>
+@php
+    function toPersianDigits($number) {
+        $persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        $english = ['0','1','2','3','4','5','6','7','8','9'];
+        return str_replace($english, $persian, $number);
+    }
+
+    function formatMoneyPersian($amount) {
+        return toPersianDigits(number_format($amount));
+    }
+@endphp
 <div class="dashboard-header">
-    <h1 class="dashboard-title">Expenses Dashboard</h1>
-    <p class="text-muted">Track, manage, and analyze your financial transactions</p>
+    <h1 class="dashboard-title">داشبورد هزینه‌ها</h1>
 </div>
 <div class="card">
     <div class="card-header">
-        <h5><i class="fas fa-table me-2"></i>Expenses Table</h5>
+        <h5><i class="fas fa-table me-2"></i>جدول هزینه‌ها</h5>
         <div class="card-tools">
-            <span class="badge bg-primary">Updated: Today</span>
+            <span class="badge bg-primary">به‌روزرسانی: امروز</span>
         </div>
     </div>
     <div class="card-body">
         <table id="expenses-table" class="table table-striped table-hover">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Type</th>
-                <th>Hours</th>
-                <th>Note</th>
-                <th>Created</th>
-                <th>Updated</th>
+                <th class="text-right">شناسه</th>
+                <th class="text-right">عنوان</th>
+                <th class="text-right">دسته‌بندی</th>
+                <th class="text-right">مبلغ (تومان)</th>
+                <th class="text-right">وضعیت</th>
+                <th class="text-right">ساعت</th>
+                <th class="text-right">تاریخ ثبت</th>
             </tr>
             </thead>
             <tbody>
             @foreach($expenses as $expense)
                 <tr>
-                    <td>{{ $expense->id }}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $expense->title }}</td>
-                    <td>
-                        @if($expense->category && $expense->category->name)
-                            <span class="category-badge">{{ $expense->category->name }}</span>
+                    <td>{{ $expense->category->name }}</td>
+                    <td style="text-align: right !important;">
+                        @if(strtolower($expense->type) === 'paid')
+                            <span style="color: #2a4399">{{ formatMoneyPersian($expense->amount) }}</span>
                         @else
-                            —
+                            <span style="color: #e74a3b">{{ formatMoneyPersian($expense->amount) }}</span>
                         @endif
                     </td>
-                    <td class="amount-cell {{ strtolower($expense->type) == 'expense' ? 'amount-expense' : 'amount-income' }}">
-                        {{ number_format($expense->amount) }}
+                    <td>
+                        @if(strtolower($expense->type) === 'paid')
+                            <span class="badge badge-paid">پرداخت شده</span>
+                        @else
+                            <span class="badge badge-due">طلبکار</span>
+                        @endif
                     </td>
-                    <td>{{ $expense->type }}</td>
-                    <td>{{ $expense->number_of_hours ?? '—' }}</td>
-                    <td>{{ $expense->note ?? '—' }}</td>
-                    <td>{{ $expense->created_at }}</td>
-                    <td>{{ $expense->updated_at }}</td>
+                    <td>{{ $expense->number_of_hours ? toPersianDigits($expense->number_of_hours) : '-' }}</td>
+                    <td>{{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -269,7 +316,7 @@
 </div>
 
 <div class="footer">
-    <p>© 2025 Financial Management System | Dashboard v2.5</p>
+    <p>© {{ toPersianDigits('2025') }} سیستم مدیریت مالی | نسخه {{ toPersianDigits('2.5') }}</p>
 </div>
 
 <!-- Scripts -->
@@ -288,86 +335,185 @@
 
 <script>
     $(document).ready(function() {
-        // Initialize DataTable with all features
-        $('#expenses-table').DataTable({
+        // Function to convert Persian digits to English digits
+        function normalizePersianDigits(str) {
+            if (!str) return '';
+            const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+            const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+
+            let result = str.toString();
+            for(let i = 0; i < 10; i++) {
+                const regex = new RegExp(persianNumbers[i], 'g');
+                result = result.replace(regex, englishNumbers[i]);
+            }
+
+            // Remove commas, spaces and other formatting characters for number comparison
+            result = result.replace(/,|\s/g, '');
+
+            return result;
+        }
+
+        // Function to convert English digits to Persian digits
+        function toPersianDigits(str) {
+            if (!str) return '';
+            const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+            const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+
+            let result = str.toString();
+            for(let i = 0; i < 10; i++) {
+                const regex = new RegExp(englishNumbers[i], 'g');
+                result = result.replace(regex, persianNumbers[i]);
+            }
+
+            return result;
+        }
+
+        // Preprocess HTML content to extract the actual text without HTML tags
+        function stripHtml(html) {
+            if (!html) return '';
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.textContent || temp.innerText || '';
+        }
+
+        // Override DataTables search functionality to handle Persian digits
+        $.extend($.fn.dataTableExt.ofnSearch, {
+            html: function(data) {
+                return normalizePersianDigits(stripHtml(data));
+            }
+        });
+
+        // Initialize DataTable with special rendering and search handling
+        const table = $('#expenses-table').DataTable({
             dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
-            buttons: [
-                {
-                    extend: 'copy',
-                    className: 'btn-sm'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn-sm'
-                },
-                {
-                    extend: 'excel',
-                    className: 'btn-sm'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn-sm'
-                },
-                {
-                    extend: 'print',
-                    className: 'btn-sm'
-                }
-            ],
+            buttons: ['copy', 'excel', 'print'],
             responsive: true,
             ordering: true,
             language: {
                 search: "جستجو:",
-                lengthMenu: "نمایش _MENU_ رکورد",
+                lengthMenu: "نمایش _MENU_ رکورد در هر صفحه",
                 info: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
+                infoEmpty: "هیچ رکوردی یافت نشد",
+                infoFiltered: "(فیلتر شده از _MAX_ رکورد)",
+                zeroRecords: "هیچ رکوردی یافت نشد",
+                emptyTable: "هیچ داده‌ای در جدول وجود ندارد",
                 paginate: {
+                    first: "اولین",
                     previous: "قبلی",
-                    next: "بعدی"
-                }
+                    next: "بعدی",
+                    last: "آخرین"
+                },
             },
             columnDefs: [
                 {
-                    // Modified Type column to handle Paid/Due status
-                    targets: 4,
-                    render: function(data, type, row) {
-                        if (type === 'display') {
-                            if (data.toLowerCase().includes('paid')) {
-                                return '<span class="badge badge-paid">Paid</span>';
-                            } else if (data.toLowerCase().includes('due')) {
-                                return '<span class="badge badge-due">Due</span>';
-                            } else if (data.toLowerCase().includes('expense')) {
-                                return '<span class="badge badge-expense">Expense</span>';
-                            } else if (data.toLowerCase().includes('income')) {
-                                return '<span class="badge badge-income">Income</span>';
-                            }
-                            return data;
-                        }
-                        return data;
-                    }
-                },
-                {
-                    // Style the Amount column
+                    // Special handling for the amount column
                     targets: 3,
                     render: function(data, type, row) {
                         if (type === 'display') {
-                            const isExpense = row[4].toLowerCase().includes('expense');
-                            const className = isExpense ? 'amount-expense' : 'amount-income';
-                            return '<div class="amount-cell ' + className + '">' + data + '</div>';
+                            return data; // Return the original formatted data for display
+                        } else if (type === 'filter' || type === 'sort') {
+                            // For filtering and sorting, return normalized data without formatting
+                            return normalizePersianDigits(stripHtml(data));
                         }
                         return data;
                     }
                 },
                 {
-                    // Style the Category column
-                    targets: 2,
+                    // Special handling for the date column
+                    targets: 6,
                     render: function(data, type, row) {
-                        if (type === 'display' && data !== '—') {
-                            return '<span class="category-badge">' + data + '</span>';
+                        if (type === 'display') {
+                            return data; // Return original formatted data for display
+                        } else if (type === 'filter' || type === 'sort') {
+                            // For filtering and sorting, return normalized data without formatting
+                            return normalizePersianDigits(stripHtml(data));
                         }
                         return data;
                     }
+                },
+                {
+                    // Special handling for the hours column
+                    targets: 5,
+                    render: function(data, type, row) {
+                        if (type === 'display') {
+                            return data; // Return original formatted data for display
+                        } else if (type === 'filter' || type === 'sort') {
+                            // For filtering and sorting, return normalized data without formatting
+                            return normalizePersianDigits(stripHtml(data));
+                        }
+                        return data;
+                    }
+                },
+                {
+                    targets: [0, 3, 5, 6], // ID, Amount, Hours, and Date columns
+                    className: 'text-right'
+                },
+                {
+                    targets: '_all',
+                    className: 'text-right'
                 }
-            ]
+            ],
+            // Explicitly set search functionality to handle custom cases
+            search: {
+                caseInsensitive: true,
+                smart: false // Disable smart search to handle exact matches
+            }
         });
+
+        // Create a more comprehensive search function
+        $.fn.dataTable.ext.search = []; // Clear existing search functions
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex, rowData, counter) {
+            const searchText = normalizePersianDigits($('div.dataTables_filter input').val().toLowerCase());
+
+            if (!searchText || searchText.trim() === '') {
+                return true;
+            }
+
+            // Check each column in the current row
+            for (let i = 0; i < data.length; i++) {
+                // Get plain text from possibly HTML content and normalize digits
+                let cellData = data[i];
+
+                // Extract text from HTML for special columns
+                if (i === 3 || i === 5 || i === 6) { // Amount, Hours, Date columns
+                    cellData = stripHtml(cellData);
+                }
+
+                // Normalize and convert to lowercase for comparison
+                cellData = normalizePersianDigits(cellData).toLowerCase();
+
+                // Debug what's being searched
+                //console.log(`Column ${i}, Searching "${searchText}" in "${cellData}"`);
+
+                // If search text is found in the cell, return true to include this row
+                if (cellData.indexOf(searchText) !== -1) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        // Handle search input - directly trigger the custom search
+        $('div.dataTables_filter input').on('keyup', function() {
+            table.draw();
+        });
+
+        // Debug function to display the current data for each cell
+        function debugTableData() {
+            const table = $('#expenses-table').DataTable();
+            table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                const data = this.data();
+                console.log(`Row ${rowIdx} data:`, data);
+                for (let i = 0; i < data.length; i++) {
+                    const normalized = normalizePersianDigits(stripHtml(data[i]));
+                    console.log(`Column ${i}:`, normalized);
+                }
+            });
+        }
+
+        // Uncomment for debugging
+        // debugTableData();
     });
 </script>
 
