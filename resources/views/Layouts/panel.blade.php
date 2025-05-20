@@ -284,6 +284,7 @@
                 <th class="text-right">وضعیت</th>
                 <th class="text-right">ساعت</th>
                 <th class="text-right">تاریخ ثبت</th>
+                <th>توضیحات</th>
             </tr>
             </thead>
             <tbody>
@@ -308,6 +309,7 @@
                     </td>
                     <td>{{ $expense->number_of_hours ? toPersianDigits($expense->number_of_hours) : '-' }}</td>
                     <td>{{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}</td>
+                    <td>{{ $expense->note }}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -335,55 +337,25 @@
 
 <script>
     $(document).ready(function() {
-        // Function to convert Persian digits to English digits
-        function normalizePersianDigits(str) {
+        function normalizeEnglishDigits(str){
             if (!str) return '';
             const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
             const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
 
             let result = str.toString();
-            for(let i = 0; i < 10; i++) {
+            for (let i = 0; i < 10; i++){
+                //find all locations that this digit is located
                 const regex = new RegExp(persianNumbers[i], 'g');
+                //replace all of the founded number
                 result = result.replace(regex, englishNumbers[i]);
+
             }
-
-            // Remove commas, spaces and other formatting characters for number comparison
-            result = result.replace(/,|\s/g, '');
-
+            result = result.replace(/,|s/g, '');
             return result;
         }
 
-        // Function to convert English digits to Persian digits
-        function toPersianDigits(str) {
-            if (!str) return '';
-            const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-            const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
-
-            let result = str.toString();
-            for(let i = 0; i < 10; i++) {
-                const regex = new RegExp(englishNumbers[i], 'g');
-                result = result.replace(regex, persianNumbers[i]);
-            }
-
-            return result;
-        }
-
-        // Preprocess HTML content to extract the actual text without HTML tags
-        function stripHtml(html) {
-            if (!html) return '';
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            return temp.textContent || temp.innerText || '';
-        }
 
 
-        /*$.extend($.fn.dataTableExt.ofnSearch, {
-            html: function(data) {
-                return normalizePersianDigits(stripHtml(data));
-            }
-        });
-*/
-        // Initialize DataTable with special rendering and search handling
         const table = $('#expenses-table').DataTable({
             dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
             buttons: ['copy', 'excel', 'print'],
@@ -406,57 +378,25 @@
             },
             columnDefs: [
                 {
-                    // Special handling for the amount column
-                    targets: 3,
+                    targets: [3, 5, 6], // Amount, Hours, and Date columns
                     render: function(data, type, row) {
-                        if (type === 'display') {
-                            return data; // Return the original formatted data for display
-                        } else if (type === 'filter' || type === 'sort') {
-                            // For filtering and sorting, return normalized data without formatting
-                            return normalizePersianDigits(stripHtml(data));
+                        if(type === 'display'){
+                            return data;
                         }
+
+                        else if(type === 'filter' || type === 'sort'){
+                            return normalizeEnglishDigits(data);
+                        }
+
                         return data;
                     }
                 },
-                {
-                    // Special handling for the date column
-                    targets: 6,
-                    render: function(data, type, row) {
-                        if (type === 'display') {
-                            return data; // Return original formatted data for display
-                        } else if (type === 'filter' || type === 'sort') {
-                            // For filtering and sorting, return normalized data without formatting
-                            return normalizePersianDigits(stripHtml(data));
-                        }
-                        return data;
-                    }
-                },
-                {
-                    // Special handling for the hours column
-                    targets: 5,
-                    render: function(data, type, row) {
-                        if (type === 'display') {
-                            return data; // Return original formatted data for display
-                        } else if (type === 'filter' || type === 'sort') {
-                            // For filtering and sorting, return normalized data without formatting
-                            return normalizePersianDigits(stripHtml(data));
-                        }
-                        return data;
-                    }
-                },
-                {
-                    targets: [0, 3, 5, 6], // ID, Amount, Hours, and Date columns
-                    className: 'text-right'
-                },
-                {
-                    targets: '_all',
-                    className: 'text-right'
-                }
             ],
-            // Explicitly set search functionality to handle custom cases
+
+
             search: {
                 caseInsensitive: true,
-                smart: false // Disable smart search to handle exact matches
+                smart: false
             }
         });
 
