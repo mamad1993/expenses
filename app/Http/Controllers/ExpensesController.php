@@ -19,4 +19,40 @@ class ExpensesController extends Controller
         return view('expenses.index', compact('expenses'));
 
     }
+
+
+    public function create()
+    {
+        return view('expenses.create');
+    }
+
+
+    public function addExpense(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'amount' => 'required|numeric',
+            'type' => 'required|in:paid,unpaid,due',
+            'hours' => 'nullable|numeric',
+            'note' => 'nullable|string',
+            'date' => 'required|date'
+        ]);
+
+        $expense = new Expenditure();
+        $expense->title = $validated['title'];
+        $expense->category_id = $validated['category_id'];
+        $expense->amount = $validated['amount'];
+        $expense->type = $validated['type'];
+        $expense->number_of_hours = $validated['hours'];
+        $expense->note = $validated['note'];
+        $expense->created_at = $validated['date'];
+
+        $expense->save();
+
+        return response()->json([
+            'message' => 'successfully saved',
+
+        ]);
+    }
 }

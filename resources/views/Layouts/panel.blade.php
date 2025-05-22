@@ -266,6 +266,10 @@
 <div class="dashboard-header">
     <h1 class="dashboard-title">داشبورد هزینه‌ها</h1>
 </div>
+
+<div>
+    <a href="{{ url('expenses/create') }}">boro</a>
+</div>
 <div class="card">
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>جدول هزینه‌ها</h5>
@@ -316,6 +320,7 @@
         </table>
     </div>
 </div>
+
 
 <div class="footer">
     <p>© {{ toPersianDigits('2025') }} سیستم مدیریت مالی | نسخه {{ toPersianDigits('2.5') }}</p>
