@@ -50,6 +50,11 @@
             border-radius: 0.35rem;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             margin-bottom: 2rem;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
         }
 
         .card-header {
@@ -69,6 +74,104 @@
 
         .card-body {
             padding: 1.25rem;
+        }
+
+        /* Summary Cards */
+        .summary-cards .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-cards .card.total-card {
+            background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+        }
+
+        .summary-cards .card.category-card {
+            background: linear-gradient(135deg, #4e73df 0%, #3a5ccc 100%);
+        }
+
+        .summary-cards .card.stats-card {
+            background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        }
+
+        .summary-cards .card-body {
+            text-align: center;
+            padding: 2rem 1.25rem;
+        }
+
+        .summary-cards .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .summary-cards .amount-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .summary-cards .amount-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .summary-cards .card-icon {
+            font-size: 3rem;
+            opacity: 0.2;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+        }
+
+        /* Category breakdown */
+        .category-breakdown {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .category-breakdown h5 {
+            color: #4e73df;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: #5a5c69;
+        }
+
+        .category-amount {
+            font-weight: 700;
+            color: #4e73df;
+            font-size: 1.1rem;
+        }
+
+        .category-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #4e73df, #36b9cc);
+            border-radius: 3px;
+            margin-top: 0.5rem;
         }
 
         /* DataTables Styling */
@@ -249,6 +352,27 @@
             right: auto;
             left: 8px;
         }
+
+        /* Animated counters */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-count {
+            animation: countUp 0.8s ease-out;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .summary-cards .amount-display {
+                font-size: 2rem;
+            }
+
+            .category-breakdown {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -262,14 +386,123 @@
     function formatMoneyPersian($amount) {
         return toPersianDigits(number_format($amount));
     }
+
+    // Calculate additional statistics
+    $paidExpenses = $expenses->where('type', 'paid');
+    $dueExpenses = $expenses->where('type', '!=', 'paid');
+    $totalPaid = $paidExpenses->sum('amount');
+    $totalDue = $dueExpenses->sum('amount');
+    $expenseCount = $expenses->count();
+
+    // Get max category total for progress bars
+    $maxCategoryTotal = $totalByCategory->max('total');
 @endphp
+
 <div class="dashboard-header">
-    <h1 class="dashboard-title">داشبورد هزینه‌ها</h1>
+    <h1 class="dashboard-title">
+        <i class="fas fa-chart-pie me-2"></i>
+        داشبورد هزینه‌ها
+    </h1>
+    <p class="text-muted">مدیریت و بررسی هزینه‌های مالی</p>
 </div>
 
 <div>
-    <a href="{{ url('expenses/create') }}">boro</a>
+    <a href="{{ url('expenses/create') }}" class="btn btn-primary mb-3">
+        <i class="fas fa-plus me-2"></i>
+        هزینه جدید
+    </a>
 </div>
+
+<!-- Summary Cards Row -->
+<div class="row summary-cards">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card total-card">
+            <div class="card-body position-relative">
+                <i class="fas fa-coins card-icon"></i>
+                <div class="card-title">مجموع کل هزینه‌ها</div>
+                <div class="amount-display animate-count">
+                    {{ formatMoneyPersian($total) }}
+                </div>
+                <div class="amount-label">تومان</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card category-card">
+            <div class="card-body position-relative">
+                <i class="fas fa-check-circle card-icon"></i>
+                <div class="card-title">پرداخت شده</div>
+                <div class="amount-display animate-count">
+                    {{ formatMoneyPersian($totalPaid) }}
+                </div>
+                <div class="amount-label">تومان</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stats-card">
+            <div class="card-body position-relative">
+                <i class="fas fa-clock card-icon"></i>
+                <div class="card-title">در انتظار پرداخت</div>
+                <div class="amount-display animate-count">
+                    {{ formatMoneyPersian($totalDue) }}
+                </div>
+                <div class="amount-label">تومان</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card" style="background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white;">
+            <div class="card-body position-relative">
+                <i class="fas fa-list card-icon"></i>
+                <div class="card-title">تعداد هزینه‌ها</div>
+                <div class="amount-display animate-count">
+                    {{ toPersianDigits($expenseCount) }}
+                </div>
+                <div class="amount-label">مورد</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Breakdown -->
+@if($totalByCategory->count() > 0)
+    <div class="row">
+        <div class="col-12">
+            <div class="category-breakdown">
+                <h5>
+                    <i class="fas fa-chart-bar me-2"></i>
+                    تفکیک هزینه‌ها بر اساس دسته‌بندی
+                </h5>
+                @foreach($totalByCategory as $categoryTotal)
+                    @php
+                        $category = $expenses->where('category_id', $categoryTotal->category_id)->first()->category ?? null;
+                        $percentage = $maxCategoryTotal > 0 ? ($categoryTotal->total / $maxCategoryTotal) * 100 : 0;
+                    @endphp
+                    @if($category)
+                        <div class="category-item">
+                            <div>
+                                <div class="category-name">
+                                    <i class="fas fa-tag me-2" style="color: #4e73df;"></i>
+                                    {{ $category->name }}
+                                </div>
+                                <div class="category-bar" style="width: {{ $percentage }}%;"></div>
+                            </div>
+                            <div class="category-amount">
+                                {{ formatMoneyPersian($categoryTotal->total) }} تومان
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
+<!-- Expenses Table -->
 <div class="card">
     <div class="card-header">
         <h5><i class="fas fa-table me-2"></i>جدول هزینه‌ها</h5>
@@ -296,31 +529,36 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $expense->title }}</td>
-                    <td>{{ $expense->category->name }}</td>
+                    <td>
+                        <span class="category-badge">{{ $expense->category->name }}</span>
+                    </td>
                     <td style="text-align: right !important;">
                         @if(strtolower($expense->type) === 'paid')
-                            <span style="color: #2a4399">{{ formatMoneyPersian($expense->amount) }}</span>
+                            <span style="color: #1cc88a; font-weight: 700;">{{ formatMoneyPersian($expense->amount) }}</span>
                         @else
-                            <span style="color: #e74a3b">{{ formatMoneyPersian($expense->amount) }}</span>
+                            <span style="color: #e74a3b; font-weight: 700;">{{ formatMoneyPersian($expense->amount) }}</span>
                         @endif
                     </td>
                     <td>
                         @if(strtolower($expense->type) === 'paid')
-                            <span class="badge badge-paid">پرداخت شده</span>
+                            <span class="badge badge-paid">
+                                <i class="fas fa-check me-1"></i>پرداخت شده
+                            </span>
                         @else
-                            <span class="badge badge-due">طلبکار</span>
+                            <span class="badge badge-due">
+                                <i class="fas fa-clock me-1"></i>طلبکار
+                            </span>
                         @endif
                     </td>
                     <td>{{ $expense->number_of_hours ? toPersianDigits($expense->number_of_hours) : '-' }}</td>
                     <td>{{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}</td>
-                    <td>{{ $expense->note }}</td>
+                    <td>{{ $expense->note ?: '-' }}</td>
                 </tr>
             @endforeach
             </tbody>
         </table>
     </div>
 </div>
-
 
 <div class="footer">
     <p>© {{ toPersianDigits('2025') }} سیستم مدیریت مالی | نسخه {{ toPersianDigits('2.5') }}</p>
@@ -349,17 +587,12 @@
 
             let result = str.toString();
             for (let i = 0; i < 10; i++){
-                //find all locations that this digit is located
                 const regex = new RegExp(persianNumbers[i], 'g');
-                //replace all of the founded number
                 result = result.replace(regex, englishNumbers[i]);
-
             }
             result = result.replace(/,|s/g, '');
             return result;
         }
-
-
 
         const table = $('#expenses-table').DataTable({
             dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
@@ -383,31 +616,28 @@
             },
             columnDefs: [
                 {
-                    targets: [3, 5, 6], // Amount, Hours, and Date columns
+                    targets: [3, 5, 6],
                     render: function(data, type, row) {
                         if(type === 'display'){
                             return data;
                         }
-
                         else if(type === 'filter' || type === 'sort'){
                             return normalizeEnglishDigits(data);
                         }
-
                         return data;
                     }
                 },
             ],
-
-
             search: {
                 caseInsensitive: true,
                 smart: false
             }
         });
 
-
-
-
+        // Add some animation delay to cards
+        $('.summary-cards .card').each(function(index) {
+            $(this).css('animation-delay', (index * 0.1) + 's');
+        });
     });
 </script>
 

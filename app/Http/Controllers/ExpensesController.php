@@ -4,19 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Expenditure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Morilog\Jalali\Jalalian;
 
 class ExpensesController extends Controller
 {
     public function index()
     {
-
-
         $expenses = Expenditure::with('category')->get();
 
+        $total = Expenditure::query()->sum('amount');
 
 
-        return view('expenses.index', compact('expenses'));
+        $totalByCategory = Expenditure::query()->
+        select('category_id',
+            DB::raw('SUM(amount) as total'))
+            ->groupBy('category_id')->get();
+
+
+
+        return view('expenses.index', compact('expenses', 'total', 'totalByCategory'));
+
 
     }
 
