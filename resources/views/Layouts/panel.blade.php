@@ -445,7 +445,7 @@
         <div class="card stats-card">
             <div class="card-body position-relative">
                 <i class="fas fa-clock card-icon"></i>
-                <div class="card-title">در انتظار پرداخت</div>
+                <div class="card-title">طلبکار</div>
                 <div class="amount-display animate-count">
                     {{ formatMoneyPersian($totalDue) }}
                 </div>
@@ -519,7 +519,6 @@
                 <th class="text-right">دسته‌بندی</th>
                 <th class="text-right">مبلغ (تومان)</th>
                 <th class="text-right">وضعیت</th>
-                <th class="text-right">ساعت</th>
                 <th class="text-right">تاریخ ثبت</th>
                 <th>توضیحات</th>
             </tr>
@@ -550,7 +549,6 @@
                             </span>
                         @endif
                     </td>
-                    <td>{{ $expense->number_of_hours ? toPersianDigits($expense->number_of_hours) : '-' }}</td>
                     <td>{{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}</td>
                     <td>{{ $expense->note ?: '-' }}</td>
                 </tr>
