@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expenditure;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Morilog\Jalali\Jalalian;
@@ -23,7 +24,37 @@ class ExpensesController extends Controller
 
 
 
-        return view('expenses.index', compact('expenses', 'total', 'totalByCategory'));
+
+        $totalByRoles = Expenditure::query()
+            ->select('role_id', DB::raw('SUM(amount) as roleTotalAmount'))
+            ->groupBy('role_id')->get();
+
+
+
+
+
+
+
+
+
+
+        $totalPaid = Expenditure::query()->where('type', 'paid')->sum('amount');
+
+        $totalDues = Expenditure::query()->where('type', 'due')->sum('amount');
+
+        $expenseCount = Expenditure::query()->count();
+
+        $maxCategoryTotal = $totalByCategory->max('total');
+
+        $maxRoleTotal = $totalByRoles->max('roleTotalAmount');
+
+
+
+        return view('expenses.index',
+            compact('expenses', 'total',
+            'totalByCategory', 'totalPaid',
+                'totalDues', 'expenseCount',
+                'maxCategoryTotal', 'totalByRoles', 'maxRoleTotal'));
 
 
     }
@@ -42,7 +73,6 @@ class ExpensesController extends Controller
             'category_id' => 'required|exists:categories,id',
             'amount' => 'required|numeric',
             'type' => 'required|in:paid,unpaid,due',
-            'hours' => 'nullable|numeric',
             'note' => 'nullable|string',
             'date' => 'required|date'
         ]);
@@ -52,7 +82,7 @@ class ExpensesController extends Controller
         $expense->category_id = $validated['category_id'];
         $expense->amount = $validated['amount'];
         $expense->type = $validated['type'];
-        $expense->number_of_hours = $validated['hours'];
+        $expense->role_id = $request->role_id;
         $expense->note = $validated['note'];
         $expense->created_at = $validated['date'];
 

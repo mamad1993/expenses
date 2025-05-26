@@ -282,6 +282,8 @@
             </div>
         </div>
 
+
+
         <div class="row">
             <div class="col-md-6 form-group">
                 <label for="amount">Amount</label>
@@ -301,6 +303,28 @@
         </div>
 
         <div class="row">
+
+            <div class="col-md-6 form-group">
+                <label for="role_id">role</label>
+                <select name="role" id="role_id" class="form-select">
+                    <option value="0">select</option>
+                    <option value="1">رزاق</option>
+                    <option value="2">جوشکار موید</option>
+
+                </select>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <label for="type">Payment Status</label>
+                <select name="type" id="type" class="form-select">
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                    <option value="due">Due</option>
+                </select>
+            </div>
+        </div>
+
+        {{--<div class="row">
             <div class="col-md-6 form-group">
                 <label for="type">Payment Status</label>
                 <select name="type" id="type" class="form-select">
@@ -317,7 +341,7 @@
                     <input type="text" name="hours" class="form-control" placeholder="Enter number of hours" id="hours">
                 </div>
             </div>
-        </div>
+        </div>--}}
 
         <div class="form-group">
             <label for="note">Notes</label>
@@ -361,7 +385,7 @@
                     category_id: $('#category_id').val(),
                     amount: $('#amount').val(),
                     type: $('#type').val(),
-                    hours: $('#hours').val(),
+                    role_id: $('#role_id').val(),
                     note: $('#note').val(),
                     date: $('#date').val(),
                 },
@@ -377,7 +401,6 @@
                     // Clear form fields
                     $('#title').val('');
                     $('#amount').val('');
-                    $('#hours').val('');
                     $('#note').val('');
                 },
                 error: function(xhr, status, error) {

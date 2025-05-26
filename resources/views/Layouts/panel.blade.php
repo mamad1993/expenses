@@ -35,56 +35,33 @@
             text-align: right;
         }
 
-        .dashboard-header {
+        .dashboard-header{
             margin-bottom: 2rem;
         }
 
-        .dashboard-title {
-            color: #4e73df;
+        .dashboard-title{
+            color: var(--primary-color);
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
-        .card {
-            border: none;
-            border-radius: 0.35rem;
+        .summary-cards .card{
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             margin-bottom: 2rem;
-            transition: transform 0.2s ease-in-out;
+            transition: transform .2s ease-in-out;
         }
 
-        .card:hover {
+        .summary-cards .card:hover{
             transform: translateY(-2px);
         }
 
-        .card-header {
-            background-color: #f8f9fc;
-            border-bottom: 1px solid #e3e6f0;
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-header h5 {
-            color: #4e73df;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .card-body {
-            padding: 1.25rem;
-        }
-
-        /* Summary Cards */
         .summary-cards .card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             margin-bottom: 1.5rem;
         }
 
-        .summary-cards .card.total-card {
+        .summary-cards .card.total-card{
             background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
         }
 
@@ -96,118 +73,125 @@
             background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
         }
 
-        .summary-cards .card-body {
+        .summary-cards .card .card-body{
             text-align: center;
             padding: 2rem 1.25rem;
         }
 
-        .summary-cards .card-title {
+        .summary-cards .card .card-title{
             font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            opacity: 0.9;
+
         }
 
-        .summary-cards .amount-display {
+        .summary-cards .card .amount-display{
             font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+            font-weight: bold;
+            margin-bottom: .5rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .summary-cards .amount-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .summary-cards .card-icon {
-            font-size: 3rem;
-            opacity: 0.2;
+        .summary-cards .card .card-icon{
             position: absolute;
-            top: 1rem;
             left: 1rem;
+            top: 1rem;
+            font-size: 3rem;
+            opacity: .2;
         }
 
-        /* Category breakdown */
-        .category-breakdown {
-            background: white;
-            border-radius: 0.5rem;
+        .category-breakdown{
+            background-color: white;
+            border-radius: .5rem;
             padding: 1.5rem;
             margin-bottom: 2rem;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
 
-        .category-breakdown h5 {
+        .category-breakdown h5{
+            text-align: center;
             color: #4e73df;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            text-align: center;
+
         }
 
-        .category-item {
+        .category-breakdown .category-item{
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem 0;
+            padding: .75rem 0;
             border-bottom: 1px solid #e3e6f0;
         }
 
-        .category-item:last-child {
+        .category-breakdown .category-item:last-child{
             border-bottom: none;
         }
 
-        .category-name {
-            font-weight: 600;
+        .category-breakdown .category-item .category-name{
+            font-weight: 700;
             color: #5a5c69;
         }
 
-        .category-amount {
+        .category-breakdown .category-item .category-amount{
             font-weight: 700;
             color: #4e73df;
             font-size: 1.1rem;
         }
 
-        .category-bar {
+
+        .category-breakdown .category-item .category-bar{
             height: 6px;
             background: linear-gradient(90deg, #4e73df, #36b9cc);
             border-radius: 3px;
-            margin-top: 0.5rem;
+            margin-top: .5rem;
         }
 
-        /* DataTables Styling */
-        table.dataTable {
+        .card-header{
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e3e6f0;
+            align-items: center;
+            padding: 1rem 1.25rem;
+
+        }
+
+        .card-header h5{
+            color: #4e73df;
+            font-weight: 700;
+            margin: 0;
+        }
+
+
+        table.dataTable{
             border-collapse: collapse !important;
             margin-top: 0 !important;
             margin-bottom: 0 !important;
         }
 
-        table.dataTable thead th {
+        table.dataTable thead th{
             border-bottom: 1px solid #e3e6f0;
-            font-weight: 700;
+            font-weight: bold;
             color: #4e73df;
-            padding: 0.75rem;
-            vertical-align: middle;
+            padding: .75rem;
             text-align: right !important;
+
         }
 
-        table.dataTable tbody td {
-            padding: 0.75rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #e3e6f0;
+        table.dataTable tbody td{
+            padding: .75rem;
         }
-
-        table.dataTable tbody tr:hover {
-            background-color: rgba(78, 115, 223, 0.05);
+        .table.dataTable tbody tr:hover td {
+            background-color: rgba(78, 115, 223, 0.05) !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 0.35rem;
+            margin: 0 0.25rem;
         }
 
         .dataTables_wrapper .dataTables_info {
             padding-top: 1rem;
             color: #858796;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            border-radius: 0.35rem;
-            margin: 0 0.25rem;
         }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button.current {
@@ -220,6 +204,7 @@
             border: 1px solid #d1d3e2;
             border-radius: 0.35rem;
             padding: 0.375rem 0.75rem;
+            margin-right: .5rem;
         }
 
         .dt-buttons .btn {
@@ -229,51 +214,28 @@
             font-size: 0.875rem;
         }
 
-        .badge {
-            padding: 0.35em 0.65em;
-            border-radius: 0.35rem;
-            font-weight: 600;
-        }
-
-        .badge-expense {
-            background-color: #e74a3b;
-            color: white;
-        }
-
-        .badge-income {
-            background-color: #1cc88a;
-            color: white;
-        }
-
-        .badge-paid {
-            background-color: #1cc88a;
-            color: white;
-        }
-
-        .badge-due {
-            background-color: #e74a3b;
-            color: white;
-        }
-
-        .amount-cell {
-            font-weight: 600;
-            text-align: left;
-        }
-
-        .amount-expense {
-            color: #e74a3b;
-        }
-
-        .amount-income {
-            color: #1cc88a;
-        }
-
-        .category-badge {
+        .category-badge{
             background-color: #4e73df;
             color: white;
-            font-size: 0.75rem;
-            padding: 0.25em 0.65em;
-            border-radius: 0.35rem;
+            font-size: .75rem;
+            padding: .25rem .65rem;
+            border-radius: .35rem;
+        }
+
+        .badge{
+            padding: .35rem .65rem;
+            border-radius: .35rem;
+            font-weight: 600;
+        }
+
+        .badge.badge-paid{
+            background-color: #1cc88a;
+            color: white;
+        }
+
+        .badge.badge-due{
+            background-color: #e74a3b;
+            color: white;
         }
 
         .footer {
@@ -283,127 +245,18 @@
             font-size: 0.875rem;
         }
 
-        /* Custom Button Styling */
-        .dt-button {
-            background: linear-gradient(180deg, #4e73df 0%, #3a5ccc 100%) !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 0.35rem !important;
-            box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
-            transition: all 0.15s ease-in-out !important;
-            padding: 0.375rem 0.75rem !important;
-            font-size: 0.875rem !important;
-            font-family: 'Vazirmatn', 'Tahoma', sans-serif !important;
-        }
 
-        .dt-button:hover {
-            background: linear-gradient(180deg, #3a5ccc 0%, #2a4399 100%) !important;
-            box-shadow: 0 0.25rem 0.5rem 0 rgba(58, 59, 69, 0.3) !important;
-        }
-
-        .dt-button.buttons-copy::before {
-            content: "📋 ";
-        }
-
-        .dt-button.buttons-csv::before {
-            content: "📄 ";
-        }
-
-        .dt-button.buttons-excel::before {
-            content: "📊 ";
-        }
-
-        .dt-button.buttons-pdf::before {
-            content: "📑 ";
-        }
-
-        .dt-button.buttons-print::before {
-            content: "🖨️ ";
-        }
-
-        /* RTL-specific adjustments */
-        .dataTables_filter {
-            text-align: left !important;
-        }
-
-        .dataTables_filter input {
-            margin-right: 0.5em !important;
-            margin-left: 0 !important;
-        }
-
-        .dt-buttons {
-            margin-right: 0 !important;
-        }
-
-        /* Fix Persian number alignment in table */
-        .text-end-persian {
-            text-align: left !important;
-        }
-
-        /* Fix header alignment for RTL */
-        .dataTable th {
-            text-align: right !important;
-        }
-
-        /* Fix sorting icons alignment */
-        table.dataTable thead .sorting:after,
-        table.dataTable thead .sorting_asc:after,
-        table.dataTable thead .sorting_desc:after {
-            right: auto;
-            left: 8px;
-        }
-
-        /* Animated counters */
-        @keyframes countUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-count {
-            animation: countUp 0.8s ease-out;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .summary-cards .amount-display {
-                font-size: 2rem;
-            }
-
-            .category-breakdown {
-                padding: 1rem;
-            }
-        }
     </style>
+
 </head>
+
 <body>
-@php
-    function toPersianDigits($number) {
-        $persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-        $english = ['0','1','2','3','4','5','6','7','8','9'];
-        return str_replace($english, $persian, $number);
-    }
-
-    function formatMoneyPersian($amount) {
-        return toPersianDigits(number_format($amount));
-    }
-
-    // Calculate additional statistics
-    $paidExpenses = $expenses->where('type', 'paid');
-    $dueExpenses = $expenses->where('type', '!=', 'paid');
-    $totalPaid = $paidExpenses->sum('amount');
-    $totalDue = $dueExpenses->sum('amount');
-    $expenseCount = $expenses->count();
-
-    // Get max category total for progress bars
-    $maxCategoryTotal = $totalByCategory->max('total');
-@endphp
-
 <div class="dashboard-header">
     <h1 class="dashboard-title">
         <i class="fas fa-chart-pie me-2"></i>
-        داشبورد هزینه‌ها
+        داشبورد هزینه ها
     </h1>
-    <p class="text-muted">مدیریت و بررسی هزینه‌های مالی</p>
+    <p class="text-muted">مدیریت و بررسی هزینه های مالی</p>
 </div>
 
 <div>
@@ -412,14 +265,28 @@
         هزینه جدید
     </a>
 </div>
+@php
 
-<!-- Summary Cards Row -->
+    function toPersianDigits($number){
+        $persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        $english = ['0','1','2','3','4','5','6','7','8','9'];
+
+        return str_replace($english, $persian, $number);
+
+    }
+
+    function formatMoneyPersian($amount){
+        return toPersianDigits(number_format($amount));
+    }
+
+
+@endphp
 <div class="row summary-cards">
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card total-card">
             <div class="card-body position-relative">
                 <i class="fas fa-coins card-icon"></i>
-                <div class="card-title">مجموع کل هزینه‌ها</div>
+                <div class="card-title">مجموع کل هزینه ها</div>
                 <div class="amount-display animate-count">
                     {{ formatMoneyPersian($total) }}
                 </div>
@@ -427,6 +294,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card category-card">
@@ -441,18 +309,20 @@
         </div>
     </div>
 
+
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card stats-card">
             <div class="card-body position-relative">
-                <i class="fas fa-clock card-icon"></i>
+                <i class="fas fa-user card-icon"></i>
                 <div class="card-title">طلبکار</div>
                 <div class="amount-display animate-count">
-                    {{ formatMoneyPersian($totalDue) }}
+                    {{ formatMoneyPersian($totalDues) }}
                 </div>
                 <div class="amount-label">تومان</div>
             </div>
         </div>
     </div>
+
 
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card" style="background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white;">
@@ -468,31 +338,64 @@
     </div>
 </div>
 
-<!-- Category Breakdown -->
 @if($totalByCategory->count() > 0)
     <div class="row">
         <div class="col-12">
             <div class="category-breakdown">
                 <h5>
                     <i class="fas fa-chart-bar me-2"></i>
-                    تفکیک هزینه‌ها بر اساس دسته‌بندی
+                    تفکیک هزینه ها براساس دسته بندی
                 </h5>
+
                 @foreach($totalByCategory as $categoryTotal)
                     @php
                         $category = $expenses->where('category_id', $categoryTotal->category_id)->first()->category ?? null;
                         $percentage = $maxCategoryTotal > 0 ? ($categoryTotal->total / $maxCategoryTotal) * 100 : 0;
+
                     @endphp
                     @if($category)
                         <div class="category-item">
                             <div>
                                 <div class="category-name">
-                                    <i class="fas fa-tag me-2" style="color: #4e73df;"></i>
+                                    <i class="fas fa-tag me-2" style="color: #4e73df"></i>
                                     {{ $category->name }}
                                 </div>
                                 <div class="category-bar" style="width: {{ $percentage }}%;"></div>
                             </div>
                             <div class="category-amount">
                                 {{ formatMoneyPersian($categoryTotal->total) }} تومان
+                            </div>
+                        </div>
+
+                    @endif
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+@endif
+
+
+@if($totalByRoles->count() > 0)
+    <div class="row">
+        <div class="col-12">
+            <div class="category-breakdown">
+                <h5>
+                    <i class="fas fa-users me-2"></i>
+                    تفکیک هزینه‌ها بر اساس نقش‌ها
+                </h5>
+
+                @foreach($totalByRoles as $role)
+                    @php
+                    $rolefirst = $expenses->where('role_id', $role->role_id)->first()->role ?? null;
+                    @endphp
+                    @if($role->role_id !== 0)
+                        <div class="category-item">
+                            <div class="category-name">
+                                {{ $rolefirst->role_name }} ( {{ $rolefirst->name }} )
+                            </div>
+                            <div class="category-amount">
+                                {{ formatMoneyPersian($role->roleTotalAmount) }} تومان
                             </div>
                         </div>
                     @endif
@@ -502,12 +405,13 @@
     </div>
 @endif
 
-<!-- Expenses Table -->
+
+
 <div class="card">
     <div class="card-header">
-        <h5><i class="fas fa-table me-2"></i>جدول هزینه‌ها</h5>
+        <h5><i class="fas fa-table me-2"></i>جدول هزینه ها</h5>
         <div class="card-tools">
-            <span class="badge bg-primary">به‌روزرسانی: امروز</span>
+            <span class="badge bg-primary">به روز رسانی امروز</span>
         </div>
     </div>
     <div class="card-body">
@@ -531,21 +435,21 @@
                     <td>
                         <span class="category-badge">{{ $expense->category->name }}</span>
                     </td>
-                    <td style="text-align: right !important;">
+                    <td>
                         @if(strtolower($expense->type) === 'paid')
                             <span style="color: #1cc88a; font-weight: 700;">{{ formatMoneyPersian($expense->amount) }}</span>
                         @else
-                            <span style="color: #e74a3b; font-weight: 700;">{{ formatMoneyPersian($expense->amount) }}</span>
+                            <span style="color: #e74a3b; font-weight: 700">{{ formatMoneyPersian($expense->amount) }}</span>
                         @endif
                     </td>
                     <td>
-                        @if(strtolower($expense->type) === 'paid')
+                        @if(strtolower($expense->type === 'paid'))
                             <span class="badge badge-paid">
                                 <i class="fas fa-check me-1"></i>پرداخت شده
                             </span>
                         @else
                             <span class="badge badge-due">
-                                <i class="fas fa-clock me-1"></i>طلبکار
+                                <i class="fas fa-user me-1"></i>طلبکار
                             </span>
                         @endif
                     </td>
@@ -554,6 +458,7 @@
                 </tr>
             @endforeach
             </tbody>
+
         </table>
     </div>
 </div>
@@ -562,7 +467,6 @@
     <p>© {{ toPersianDigits('2025') }} سیستم مدیریت مالی | نسخه {{ toPersianDigits('2.5') }}</p>
 </div>
 
-<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -577,67 +481,72 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        function normalizeEnglishDigits(str){
-            if (!str) return '';
-            const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-            const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+$(document).ready(function (){
 
-            let result = str.toString();
-            for (let i = 0; i < 10; i++){
-                const regex = new RegExp(persianNumbers[i], 'g');
-                result = result.replace(regex, englishNumbers[i]);
-            }
-            result = result.replace(/,|s/g, '');
-            return result;
+    function normalizeEnglishDigits(str){
+        if (!str) return '';
+        const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+
+
+        let result = str.toString();
+        for (let i = 0; i < 10; i++){
+            //regex will find all of the locations of a repeated digit
+            //for example ۵..,... -> THIS IS PERSIAN DIGIT
+            /*
+            * i=0: regex = /۰/g → result = "۵00,000" (all ۰ replaced with 0)
+            i=1-4: no matches, no changes
+            i=5: regex = /۵/g → result = "500,000" (۵ replaced with 5)
+                i=6-9: no matches, no changes*/
+            const regex = new RegExp(persianNumbers[i], 'g');
+            result = result.replace(regex, englishNumbers[i]);
         }
+        //remove , in 500,000 the result is going to become this 500000
+        result = result.replace(/,|s/g, '');
+        return result;
+    }
 
-        const table = $('#expenses-table').DataTable({
-            dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
-            buttons: ['copy', 'excel', 'print'],
-            responsive: true,
-            ordering: true,
-            language: {
-                search: "جستجو:",
-                lengthMenu: "نمایش _MENU_ رکورد در هر صفحه",
-                info: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
-                infoEmpty: "هیچ رکوردی یافت نشد",
-                infoFiltered: "(فیلتر شده از _MAX_ رکورد)",
-                zeroRecords: "هیچ رکوردی یافت نشد",
-                emptyTable: "هیچ داده‌ای در جدول وجود ندارد",
-                paginate: {
-                    first: "اولین",
-                    previous: "قبلی",
-                    next: "بعدی",
-                    last: "آخرین"
-                },
+    const table = $('#expenses-table').dataTable({
+        dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
+        buttons: ['copy', 'excel', 'print'],
+        responsive: true,
+        ordering: true,
+        language: {
+            search: "جستجو:",
+            lengthMenu: "نمایش _MENU_ رکورد در هر صفحه",
+            info: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
+            infoEmpty: "هیچ رکوردی یافت نشد",
+            infoFiltered: "(فیلتر شده از _MAX_ رکورد)",
+            zeroRecords: "هیچ رکوردی یافت نشد",
+            emptyTable: "هیچ داده‌ای در جدول وجود ندارد",
+            paginate: {
+                first: "اولین",
+                previous: "قبلی",
+                next: "بعدی",
+                last: "آخرین"
             },
-            columnDefs: [
-                {
-                    targets: [3, 5, 6],
-                    render: function(data, type, row) {
-                        if(type === 'display'){
-                            return data;
-                        }
-                        else if(type === 'filter' || type === 'sort'){
-                            return normalizeEnglishDigits(data);
-                        }
+        },
+        columnDefs: [
+            {
+                targets: [3, 5],
+                render: function (data, type, row){
+                    if(type === 'display'){
                         return data;
                     }
-                },
-            ],
-            search: {
-                caseInsensitive: true,
-                smart: false
-            }
-        });
+                    else if(type === 'filter' || type === 'sort'){
+                        return normalizeEnglishDigits(data);
+                    }
 
-        // Add some animation delay to cards
-        $('.summary-cards .card').each(function(index) {
-            $(this).css('animation-delay', (index * 0.1) + 's');
-        });
+                    return data;
+
+                }
+            },
+        ],
     });
+});
 </script>
 
 </body>
+
 </html>
+

@@ -11,4 +11,10 @@ class Expenditure extends Model
         return $this->belongsTo(Category::class, 'category_id');
 
     }
+
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 }
