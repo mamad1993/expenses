@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+
     <!-- Persian Font: Vazirmatn -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 
@@ -249,7 +250,19 @@
     </style>
 
 </head>
-
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">تصویر هزینه</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="expenseImage" src="" alt="Expense Image" style="max-width: 100%; max-height: 60vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
 <body>
 <div class="dashboard-header">
     <h1 class="dashboard-title">
@@ -360,7 +373,7 @@
                                     <i class="fas fa-tag me-2" style="color: #4e73df"></i>
                                     {{ $category->name }}
                                 </div>
-                                <div class="category-bar" style="width: {{ $percentage }}%;"></div>
+                                <div class="category-bar" style="width: {{ $percentage }}px;"></div>
                             </div>
                             <div class="category-amount">
                                 {{ formatMoneyPersian($categoryTotal->total) }} تومان
@@ -429,7 +442,7 @@
             </thead>
             <tbody>
             @foreach($expenses as $expense)
-                <tr>
+                <tr data-image="{{ $expense->image ? asset('storage/' . $expense->image) : '' }}">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $expense->title }}</td>
                     <td>
@@ -455,6 +468,7 @@
                     </td>
                     <td>{{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}</td>
                     <td>{{ $expense->note ?: '-' }}</td>
+
                 </tr>
             @endforeach
             </tbody>
@@ -479,71 +493,80 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
 
 <script>
-$(document).ready(function (){
+    $(document).ready(function (){
 
-    function normalizeEnglishDigits(str){
-        if (!str) return '';
-        const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-        const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+        function normalizeEnglishDigits(str){
+            if (!str) return '';
+            const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+            const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
 
-
-        let result = str.toString();
-        for (let i = 0; i < 10; i++){
-            //regex will find all of the locations of a repeated digit
-            //for example ۵..,... -> THIS IS PERSIAN DIGIT
-            /*
-            * i=0: regex = /۰/g → result = "۵00,000" (all ۰ replaced with 0)
-            i=1-4: no matches, no changes
-            i=5: regex = /۵/g → result = "500,000" (۵ replaced with 5)
-                i=6-9: no matches, no changes*/
-            const regex = new RegExp(persianNumbers[i], 'g');
-            result = result.replace(regex, englishNumbers[i]);
+            let result = str.toString();
+            for (let i = 0; i < 10; i++){
+                const regex = new RegExp(persianNumbers[i], 'g');
+                result = result.replace(regex, englishNumbers[i]);
+            }
+            result = result.replace(/,|s/g, '');
+            return result;
         }
-        //remove , in 500,000 the result is going to become this 500000
-        result = result.replace(/,|s/g, '');
-        return result;
-    }
 
-    const table = $('#expenses-table').dataTable({
-        dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
-        buttons: ['copy', 'excel', 'print'],
-        responsive: true,
-        ordering: true,
-        language: {
-            search: "جستجو:",
-            lengthMenu: "نمایش _MENU_ رکورد در هر صفحه",
-            info: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
-            infoEmpty: "هیچ رکوردی یافت نشد",
-            infoFiltered: "(فیلتر شده از _MAX_ رکورد)",
-            zeroRecords: "هیچ رکوردی یافت نشد",
-            emptyTable: "هیچ داده‌ای در جدول وجود ندارد",
-            paginate: {
-                first: "اولین",
-                previous: "قبلی",
-                next: "بعدی",
-                last: "آخرین"
+        // Initialize DataTable
+        const table = $('#expenses-table').dataTable({
+            dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
+            buttons: ['copy', 'excel', 'print'],
+            responsive: true,
+            ordering: true,
+            language: {
+                search: "جستجو:",
+                lengthMenu: "نمایش _MENU_ رکورد در هر صفحه",
+                info: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
+                infoEmpty: "هیچ رکوردی یافت نشد",
+                infoFiltered: "(فیلتر شده از _MAX_ رکورد)",
+                zeroRecords: "هیچ رکوردی یافت نشد",
+                emptyTable: "هیچ داده‌ای در جدول وجود ندارد",
+                paginate: {
+                    first: "اولین",
+                    previous: "قبلی",
+                    next: "بعدی",
+                    last: "آخرین"
+                },
             },
-        },
-        columnDefs: [
-            {
-                targets: [3, 5],
-                render: function (data, type, row){
-                    if(type === 'display'){
+            columnDefs: [
+                {
+                    targets: [3, 5],
+                    render: function (data, type, row){
+                        if(type === 'display'){
+                            return data;
+                        }
+                        else if(type === 'filter' || type === 'sort'){
+                            return normalizeEnglishDigits(data);
+                        }
                         return data;
                     }
-                    else if(type === 'filter' || type === 'sort'){
-                        return normalizeEnglishDigits(data);
-                    }
+                },
+            ],
+        });
 
-                    return data;
+        // Initialize Bootstrap Modal
+        const imageModal = new bootstrap.Modal(document.getElementById('imageModal'), {
+            keyboard: true,
+            backdrop: true,
+            focus: true
+        });
 
-                }
-            },
-        ],
+        // Handle table row clicks for image modal
+        $('#expenses-table tbody').on('click', 'tr', function (){
+            const imageUrl = $(this).data('image');
+
+            if(imageUrl && imageUrl !== ''){
+                $('#expenseImage').attr('src', imageUrl);
+                imageModal.show();
+            }
+        });
     });
-});
 </script>
 
 </body>

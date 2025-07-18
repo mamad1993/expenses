@@ -68,13 +68,15 @@ class ExpensesController extends Controller
 
     public function addExpense(Request $request)
     {
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'amount' => 'required|numeric',
             'type' => 'required|in:paid,unpaid,due',
             'note' => 'nullable|string',
-            'date' => 'required|date'
+            'date' => 'required|date',
+            'image' => 'nullable|image|max:2048',
         ]);
 
         $expense = new Expenditure();
@@ -85,6 +87,11 @@ class ExpensesController extends Controller
         $expense->role_id = $request->role_id;
         $expense->note = $validated['note'];
         $expense->created_at = $validated['date'];
+
+        if($request->hasFile('image')){
+            $path = $request->file('image')->store('expenses', 'public');
+            $expense->image = $path;
+        }
 
         $expense->save();
 

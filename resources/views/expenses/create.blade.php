@@ -270,7 +270,7 @@
             <div class="col-md-6 form-group">
                 <label for="category_id">Category</label>
                 <select name="category" id="category_id" class="form-select">
-                    <option value="5">ابزار و مصالح</option>
+                    <option value="5">ابزار</option>
                     <option value="1">شهرداری و اداری</option>
                     <option value="2">نقشه و طراحی</option>
                     <option value="3">لوله‌کشی و تأسیسات</option>
@@ -278,6 +278,7 @@
                     <option value="6">کارگر و استادکار</option>
                     <option value="7">نقاشی و رنگ‌آمیزی</option>
                     <option value="8">متفرقه</option>
+                    <option value="9">خاکبرداری و مصالح</option>
                 </select>
             </div>
         </div>
@@ -348,6 +349,14 @@
             <textarea name="note" id="note" class="form-control" placeholder="Add any additional notes here..."></textarea>
         </div>
 
+
+        <div class="form-group">
+            <label for="">Upload Image</label>
+            <input type="file" class="form-control" name="image" id="image" accept="image/*">
+
+        </div>
+
+
         <div class="submit-container">
             <button type="button" id="submitBtn" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Expense
@@ -374,21 +383,29 @@
             // Show loading spinner
             $('#loadingSpinner').css('display', 'inline-block');
 
+            let formData = new FormData();
+            formData.append('title', $('#title').val());
+            formData.append('category_id', $('#category_id').val());
+            formData.append('amount', $('#amount').val());
+            formData.append('type', $('#type').val());
+            formData.append('role_id', $('#role_id').val());
+            formData.append('note', $('#note').val());
+            formData.append('date', $('#date').val());
+
+            let image = $('#image')[0].files[0];
+            if(image){
+                formData.append('image', image);
+
+            }
             $.ajax({
                 url: '{{ route("add_expense") }}',
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: {
-                    title: $('#title').val(),
-                    category_id: $('#category_id').val(),
-                    amount: $('#amount').val(),
-                    type: $('#type').val(),
-                    role_id: $('#role_id').val(),
-                    note: $('#note').val(),
-                    date: $('#date').val(),
-                },
+                data:formData,
+                processData: false, // Required for FormData
+                contentType: false,
                 success: function(response) {
                     // Hide loading spinner
                     $('#loadingSpinner').css('display', 'none');
@@ -402,6 +419,8 @@
                     $('#title').val('');
                     $('#amount').val('');
                     $('#note').val('');
+                    $('#image').val('');
+
                 },
                 error: function(xhr, status, error) {
                     // Hide loading spinner
@@ -422,5 +441,80 @@
         });
     });
 </script>
+{{--<script>
+    $(document).ready(function() {
+        // Initialize date picker
+        flatpickr("#date", {
+            dateFormat: "Y-m-d",
+            defaultDate: new Date()
+        });
+
+        // Form submission
+        $('#submitBtn').on('click', function(e) {
+            e.preventDefault();
+
+            // Show loading spinner
+            $('#loadingSpinner').css('display', 'inline-block');
+
+            let formData = new FormData();
+            formData.append('title', $('#title').val());
+            formData.append('category_id', $('#category_id').val());
+            formData.append('amount', $('#amount').val());
+            formData.append('type', $('#type').val());
+            formData.append('role_id', $('#role_id').val());
+            formData.append('note', $('#note').val());
+            formData.append('date', $('#date').val());
+            $.ajax({
+                url: '{{ route("add_expense") }}',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    title: $('#title').val(),
+                    category_id: $('#category_id').val(),
+                    amount: $('#amount').val(),
+                    type: $('#type').val(),
+                    role_id: $('#role_id').val(),
+                    note: $('#note').val(),
+                    date: $('#date').val(),
+                    image: $('#image').val(),
+
+                },
+                success: function(response) {
+                    // Hide loading spinner
+                    $('#loadingSpinner').css('display', 'none');
+
+                    // Show success message
+                    $('#successAlert').fadeIn().delay(3000).fadeOut();
+
+                    console.log('response', response.message);
+
+                    // Clear form fields
+                    $('#title').val('');
+                    $('#amount').val('');
+                    $('#note').val('');
+                    $('#image').val();
+
+                },
+                error: function(xhr, status, error) {
+                    // Hide loading spinner
+                    $('#loadingSpinner').css('display', 'none');
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        // Add status badge display when changing type
+        $('#type').on('change', function() {
+            let statusValue = $(this).val();
+            let statusClass = 'status-' + statusValue;
+
+            // Update visual feedback based on selection
+            $(this).removeClass('status-paid status-unpaid status-due')
+                .addClass(statusClass);
+        });
+    });
+</script>--}}
 </body>
 </html>
