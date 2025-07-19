@@ -100,4 +100,19 @@ class ExpensesController extends Controller
 
         ]);
     }
+
+    public function getImage($id){
+        $expense = Expenditure::query()->findOrFail($id);
+        if(!$expense || !$expense->image){
+            return response()->json([
+                'image_url' => null
+            ]);
+        }
+
+        $url = asset('storage/'. $expense->image);
+
+        return response()->json([
+            'image_url' => $url
+        ]);
+    }
 }

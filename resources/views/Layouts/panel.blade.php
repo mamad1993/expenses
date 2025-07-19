@@ -442,7 +442,8 @@
             </thead>
             <tbody>
             @foreach($expenses as $expense)
-                <tr data-image="{{ $expense->image ? asset('storage/' . $expense->image) : '' }}">
+                <!-- <tr data-image="{{ $expense->image ? asset('storage/' . $expense->image) : '' }}"> -->
+                <tr data-id="{{ $expense->id }}">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $expense->title }}</td>
                     <td>
@@ -514,7 +515,7 @@
         }
 
         // Initialize DataTable
-        const table = $('#expenses-table').dataTable({
+        const table = $('#expenses-table').DataTable({
             dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
             buttons: ['copy', 'excel', 'print'],
             responsive: true,
@@ -558,12 +559,34 @@
         });
 
         // Handle table row clicks for image modal
-        $('#expenses-table tbody').on('click', 'tr', function (){
+        /* $('#expenses-table tbody').on('click', 'tr', function (){
             const imageUrl = $(this).data('image');
 
             if(imageUrl && imageUrl !== ''){
                 $('#expenseImage').attr('src', imageUrl);
                 imageModal.show();
+            }
+        }); */
+        $('#expenses-table tbody').on('click', 'tr', function(){
+            const expenseId = $(this).data('id');
+            
+
+            if(expenseId){
+                $.ajax({
+                    url: `/expenses/image/${expenseId}`,
+                    type: 'GET',
+                    success: function(response){
+
+                        if(response.image_url){
+                            $('#expenseImage').attr('src', response.image_url);
+                            imageModal.show();
+
+                        }
+                    },
+                    error: function () {
+                    alert('Error fetching image.');
+                }
+                });
             }
         });
     });

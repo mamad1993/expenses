@@ -9,3 +9,4 @@ Route::get('/', [ExpensesController::class, 'index']);
 Route::get('expenses/create', [ExpensesController::class, 'create']);
 
 Route::POST('add_expense', [ExpensesController::class, 'addExpense'])->name('add_expense');
+Route::get('expenses/image/{id}', [ExpensesController::class, 'getImage']);
