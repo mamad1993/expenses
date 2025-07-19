@@ -313,9 +313,9 @@
         <div class="card category-card">
             <div class="card-body position-relative">
                 <i class="fas fa-check-circle card-icon"></i>
-                <div class="card-title">پرداخت شده</div>
+                <div class="card-title">میانگین روزانه</div>
                 <div class="amount-display animate-count">
-                    {{ formatMoneyPersian($totalPaid) }}
+                    {{ formatMoneyPersian($dailyAverage) }}
                 </div>
                 <div class="amount-label">تومان</div>
             </div>

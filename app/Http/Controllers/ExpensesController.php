@@ -7,6 +7,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Morilog\Jalali\Jalalian;
+use Carbon\Carbon;
 
 class ExpensesController extends Controller
 {
@@ -16,6 +17,8 @@ class ExpensesController extends Controller
 
         $total = Expenditure::query()->sum('amount');
 
+        $daysSinceMarch17 = (int) Carbon::parse('2025-03-17')->diffInDays(now());
+        
 
         $totalByCategory = Expenditure::query()->
         select('category_id',
@@ -39,6 +42,7 @@ class ExpensesController extends Controller
 
 
         $totalPaid = Expenditure::query()->where('type', 'paid')->sum('amount');
+        
 
         $totalDues = Expenditure::query()->where('type', 'due')->sum('amount');
 
@@ -49,12 +53,14 @@ class ExpensesController extends Controller
         $maxRoleTotal = $totalByRoles->max('roleTotalAmount');
 
 
+        $dailyAverage = $daysSinceMarch17 > 0 ? round($total/$daysSinceMarch17, 2) : 0;
+
 
         return view('expenses.index',
             compact('expenses', 'total',
             'totalByCategory', 'totalPaid',
                 'totalDues', 'expenseCount',
-                'maxCategoryTotal', 'totalByRoles', 'maxRoleTotal'));
+                'maxCategoryTotal', 'totalByRoles', 'maxRoleTotal', 'dailyAverage'));
 
 
     }
