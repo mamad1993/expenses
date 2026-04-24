@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Expense Tracker</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css" rel="stylesheet">
+    {{--<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css" rel="stylesheet">--}}
     <style>
         :root {
             --primary: #4f46e5;
@@ -272,18 +272,44 @@
                 <select name="category" id="category_id" class="form-select">
                     <option value="5">ابزار</option>
                     <option value="1">شهرداری و اداری</option>
-                    <option value="2">نقشه و طراحی</option>
-                    <option value="3">لوله‌کشی و تأسیسات</option>
                     <option value="4">خوراکی و پذیرایی و کمک</option>
-                    <option value="6">کارگر و استادکار</option>
-                    <option value="7">نقاشی و رنگ‌آمیزی</option>
+                    <option value="6">پرسنل عمرانی</option>
                     <option value="8">متفرقه</option>
                     <option value="9">خاکبرداری و مصالح</option>
                 </select>
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-6 form-group" id="omran-section" style="display: none">
+                <label for="">قسمت</label>
+                <select name="" id="section_id" class="form-select">
+                    <option value="">select section</option>
+                    <option value="4">مهندس</option>
+                    <option value="5">مجری</option>
+                    <option value="6">کارگر</option>
+                </select>
+            </div>
 
+
+            <div class="col-md-6 form-group" id="field-container" style="display: none">
+                <label for="">زمینه</label>
+                <select class="form-select" id="field_id">
+                    <option value="">Select field</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group" id="employee-name" style="display: none">
+                <label for="">نام</label>
+                <select class="form-select" id="employee_id">
+                    <option value="">Select employee</option>
+                </select>
+
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-6 form-group">
@@ -298,51 +324,17 @@
                 <label for="date">Date</label>
                 <div class="icon-input">
                     <i class="fas fa-calendar"></i>
-                    <input type="text" class="form-control" id="date" placeholder="Select date">
+                    <input type="date" class="form-control" id="date" placeholder="Select date">
                 </div>
             </div>
+
+
         </div>
 
-        <div class="row">
 
-            <div class="col-md-6 form-group">
-                <label for="role_id">role</label>
-                <select name="role" id="role_id" class="form-select">
-                    <option value="0">select</option>
-                    <option value="1">رزاق</option>
-                    <option value="2">جوشکار موید</option>
 
-                </select>
-            </div>
 
-            <div class="col-md-6 form-group">
-                <label for="type">Payment Status</label>
-                <select name="type" id="type" class="form-select">
-                    <option value="paid">Paid</option>
-                    <option value="unpaid">Unpaid</option>
-                    <option value="due">Due</option>
-                </select>
-            </div>
-        </div>
 
-        {{--<div class="row">
-            <div class="col-md-6 form-group">
-                <label for="type">Payment Status</label>
-                <select name="type" id="type" class="form-select">
-                    <option value="paid">Paid</option>
-                    <option value="unpaid">Unpaid</option>
-                    <option value="due">Due</option>
-                </select>
-            </div>
-
-            <div class="col-md-6 form-group">
-                <label for="hours">Hours</label>
-                <div class="icon-input">
-                    <i class="fas fa-clock"></i>
-                    <input type="text" name="hours" class="form-control" placeholder="Enter number of hours" id="hours">
-                </div>
-            </div>
-        </div>--}}
 
         <div class="form-group">
             <label for="note">Notes</label>
@@ -365,16 +357,88 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+{{--<script src="/js/simple-datepicker.js"></script>--}}
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>--}}
+<script src="/plugins/jquery/jquery.min.js"></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>--}}
 <script>
     $(document).ready(function() {
         // Initialize date picker
-        flatpickr("#date", {
+        /*flatpickr("#date", {
             dateFormat: "Y-m-d",
             defaultDate: new Date()
+        });*/
+
+        $('#category_id').on('change', function (){
+            let categoryId = $(this).val();
+            $('#section_id').val('');
+
+            if(categoryId === "6"){
+                $('#omran-section').show();
+            }else{
+                $('#omran-section').hide();
+                $('#field-container').hide();
+                $('#employee-name').hide();
+
+                $('#omran-section').val('');
+                $('#field_id').empty().append('<option value="">Select field</option>');
+                $('#employee_id').empty().append('<option value="">Select employee</option>');
+            }
         });
+
+
+
+
+        $('#section_id').on('change', function (){
+            let sectionId = $(this).val();
+            $('#field_id').empty().append('<option value="">Select field</option>');
+            $('#employee_id').empty().append('<option value="">Select employee</option>');
+            $('#employee-name').hide();
+
+            if(!sectionId){
+                $('#field-container').hide();
+                return;
+            }
+
+            $.ajax({
+                url: '/fetchFields/' + sectionId,
+                type: 'GET',
+                success: function (response){
+                    response.fields.forEach(item => {
+                        $('#field_id').append(
+                            `<option value="${item.id}"
+                            class="form-select"
+                            >${item.name}</option>`
+                        );
+                    });
+                    $('#field-container').show();
+                }
+            });
+        });
+
+        $('#field_id').on('change', function (){
+            let fieldId = $(this).val();
+            $('#employee_id').empty().append('<option value="">Select employee</option>');
+
+            if(!fieldId){
+                $('#employee-name').hide();
+                return;
+            }
+            $.ajax({
+                url: '/fetchEmployees/' + fieldId,
+                type: 'GET',
+                success: function (response){
+                    response.employees.forEach(item => {
+                        $('#employee_id').append(
+                            `<option value="${item.id}">${item.name}</option>`
+                        );
+                    });
+                    $('#employee-name').show();
+                }
+            });
+        });
+
+
 
         // Form submission
         $('#submitBtn').on('click', function(e) {
@@ -383,14 +447,22 @@
             // Show loading spinner
             $('#loadingSpinner').css('display', 'inline-block');
 
+            let categoryId = $('#category_id').val();
+
             let formData = new FormData();
             formData.append('title', $('#title').val());
             formData.append('category_id', $('#category_id').val());
             formData.append('amount', $('#amount').val());
-            formData.append('type', $('#type').val());
-            formData.append('role_id', $('#role_id').val());
+/*            formData.append('type', $('#type').val());
+            formData.append('role_id', $('#role_id').val());*/
             formData.append('note', $('#note').val());
             formData.append('date', $('#date').val());
+
+
+            if(categoryId === "6"){
+                formData.append('field_id', $('#field_id').val());
+                formData.append('employee_id', $('#employee_id').val());
+            }
 
             let image = $('#image')[0].files[0];
             if(image){
@@ -420,6 +492,11 @@
                     $('#amount').val('');
                     $('#note').val('');
                     $('#image').val('');
+                    if($('#category_id').val() === "6"){
+                        $('#section_id').val('');
+                        $('#field_id').val('');
+                        $('#employee_id').val('');
+                    }
 
                 },
                 error: function(xhr, status, error) {
@@ -441,80 +518,6 @@
         });
     });
 </script>
-{{--<script>
-    $(document).ready(function() {
-        // Initialize date picker
-        flatpickr("#date", {
-            dateFormat: "Y-m-d",
-            defaultDate: new Date()
-        });
 
-        // Form submission
-        $('#submitBtn').on('click', function(e) {
-            e.preventDefault();
-
-            // Show loading spinner
-            $('#loadingSpinner').css('display', 'inline-block');
-
-            let formData = new FormData();
-            formData.append('title', $('#title').val());
-            formData.append('category_id', $('#category_id').val());
-            formData.append('amount', $('#amount').val());
-            formData.append('type', $('#type').val());
-            formData.append('role_id', $('#role_id').val());
-            formData.append('note', $('#note').val());
-            formData.append('date', $('#date').val());
-            $.ajax({
-                url: '{{ route("add_expense") }}',
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    title: $('#title').val(),
-                    category_id: $('#category_id').val(),
-                    amount: $('#amount').val(),
-                    type: $('#type').val(),
-                    role_id: $('#role_id').val(),
-                    note: $('#note').val(),
-                    date: $('#date').val(),
-                    image: $('#image').val(),
-
-                },
-                success: function(response) {
-                    // Hide loading spinner
-                    $('#loadingSpinner').css('display', 'none');
-
-                    // Show success message
-                    $('#successAlert').fadeIn().delay(3000).fadeOut();
-
-                    console.log('response', response.message);
-
-                    // Clear form fields
-                    $('#title').val('');
-                    $('#amount').val('');
-                    $('#note').val('');
-                    $('#image').val();
-
-                },
-                error: function(xhr, status, error) {
-                    // Hide loading spinner
-                    $('#loadingSpinner').css('display', 'none');
-                    console.error('Error:', error);
-                }
-            });
-        });
-
-        // Add status badge display when changing type
-        $('#type').on('change', function() {
-            let statusValue = $(this).val();
-            let statusClass = 'status-' + statusValue;
-
-            // Update visual feedback based on selection
-            $(this).removeClass('status-paid status-unpaid status-due')
-                .addClass(statusClass);
-        });
-    });
-</script>--}}
 </body>
 </html>
