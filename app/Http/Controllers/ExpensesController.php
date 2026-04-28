@@ -9,6 +9,8 @@ use App\Models\MunSectionDetails;
 use App\Models\OmranEmployee;
 use App\Models\OmranField;
 use App\Models\OmranSection;
+use App\Models\ToolSection;
+use App\Models\ToolSectionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Morilog\Jalali\Jalalian;
@@ -197,6 +199,14 @@ class ExpensesController extends Controller
             $omranEmployee->save();
         }
 
+        if($request->category_id == 5){
+            $expenseId = $expense->id;
+            $addDetail = new ToolSectionDetail();
+            $addDetail->expense_id = $expenseId;
+            $addDetail->tool_section_id = $request->tool_id;
+            $addDetail->save();
+        }
+
 
         return response()->json([
             'message' => 'successfully saved',
@@ -235,5 +245,23 @@ class ExpensesController extends Controller
         return response()->json([
             'employees' => $employees,
         ]);
+    }
+
+    public function fetchTools()
+    {
+        $totalSectionAmount = ToolSectionDetail::query()
+            ->leftJoin('expenditures', 'tool_section_details.expense_id', '=', 'expenditures.id')
+            ->leftJoin('tool_sections', 'tool_section_details.tool_section_id', '=', 'tool_sections.id')
+            ->select('tool_sections.name')
+            ->selectRaw('COALESCE(SUM(expenditures.amount), 0) as total_amount')
+            ->groupBy('tool_section_details.tool_section_id', 'tool_sections.name')
+            ->get();
+
+        return response()->json([
+            'totalSectionAmount' => $totalSectionAmount,
+
+        ]);
+
+
     }
 }

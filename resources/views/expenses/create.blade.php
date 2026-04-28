@@ -280,6 +280,22 @@
             </div>
         </div>
 
+        <div class="col-md-12">
+            <div class="form-group" id="tool-sections">
+                <label for="">گروه</label>
+                <select class="form-select" id="tool_id">
+                    <option value="5">ابزارالات</option>
+                    <option value="1">تاسیسات ابی</option>
+                    <option value="2">تاسیسات برقی</option>
+                    <option value="3">تاسیسات گازی</option>
+                    <option value="4">اهن</option>
+                    <option value="6">تعمیرات هیلتی</option>
+                    <option value="7">کانال</option>
+                </select>
+
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-6 form-group" id="omran-section" style="display: none">
                 <label for="">قسمت</label>
@@ -369,16 +385,26 @@
             defaultDate: new Date()
         });*/
 
+
+
+
         $('#category_id').on('change', function (){
             let categoryId = $(this).val();
             $('#section_id').val('');
 
             if(categoryId === "6"){
                 $('#omran-section').show();
+                $('#tool-sections').hide();
+            }else if(categoryId === "5"){
+                $('#tool-sections').show();
+                $('#omran-section').hide();
+                $('#field-container').hide();
+                $('#employee-name').hide();
             }else{
                 $('#omran-section').hide();
                 $('#field-container').hide();
                 $('#employee-name').hide();
+                $('#tool-sections').hide();
 
                 $('#omran-section').val('');
                 $('#field_id').empty().append('<option value="">Select field</option>');
@@ -449,6 +475,8 @@
 
             let categoryId = $('#category_id').val();
 
+
+
             let formData = new FormData();
             formData.append('title', $('#title').val());
             formData.append('category_id', $('#category_id').val());
@@ -462,6 +490,10 @@
             if(categoryId === "6"){
                 formData.append('field_id', $('#field_id').val());
                 formData.append('employee_id', $('#employee_id').val());
+            }
+
+            if (categoryId === "5"){
+                formData.append('tool_id', $('#tool_id').val());
             }
 
             let image = $('#image')[0].files[0];

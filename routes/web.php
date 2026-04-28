@@ -23,3 +23,5 @@ Route::GET('/expenses/fetchDetails/{categoryId}', [ExpensesController::class, 'f
 Route::GET('/expenses/OmranSectionTotals/{categoryId}', [ExpensesController::class, 'OmranSectionTotals']);
 Route::GET('/expenses/OmranFieldTotals/{sectionId}', [ExpensesController::class, 'OmranFieldTotals']);
 Route::GET('/expenses/employeeExpensesDetail/{fieldId}', [ExpensesController::class, 'employeeExpensesDetail']);
+
+Route::GET('/fetchTools', [ExpensesController::class, 'fetchTools']);

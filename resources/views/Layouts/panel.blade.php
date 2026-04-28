@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
+
 <body>
 
 <!-- Modal correctly placed inside body -->
@@ -45,7 +46,7 @@
                 <i class="fas fa-chart-pie me-2" style="color: var(--primary);"></i>
                 داشبورد هزینه‌ها
             </h1>
-            <p class="dashboard-subtitle">مدیریت و بررسی دقیق هزینه‌های مالی سیستم</p>
+            <p class="dashboard-subtitle">مدیریت و بررسی دقیق هزینه‌های مالی پشت مطبخ</p>
         </div>
         <div>
             <a href="{{ url('expenses/create') }}" class="btn-custom-primary">
@@ -117,34 +118,36 @@
                         تفکیک هزینه‌ها براساس دسته‌بندی
                     </div>
 
-                    @foreach($totalByCategory as $categoryTotal)
-                        @php
-                            $category = $expenses->where('category_id', $categoryTotal->category_id)->first()->category ?? null;
-                            $percentage = $maxCategoryTotal > 0 ? ($categoryTotal->total / $maxCategoryTotal) * 100 : 0;
-                        @endphp
-                        @if($category)
-                            <div class="category-wrapper">
-                                <div class="category-item" data-id="{{ $categoryTotal->category_id }}" style="cursor: pointer">
-                                    <div class="category-info">
-                                        <div class="category-name">
-                                            {{ $category->name }}
+                    <div class="scrollable-content">
+                        @foreach($totalByCategory as $categoryTotal)
+                            @php
+                                $category = $expenses->where('category_id', $categoryTotal->category_id)->first()->category ?? null;
+                                $percentage = $maxCategoryTotal > 0 ? ($categoryTotal->total / $maxCategoryTotal) * 100 : 0;
+                            @endphp
+                            @if($category)
+                                <div class="category-wrapper">
+                                    <div class="category-item" data-id="{{ $categoryTotal->category_id }}" style="cursor: pointer">
+                                        <div class="category-info">
+                                            <div class="category-name">
+                                                {{ $category->name }}
+                                            </div>
+                                            <div class="category-amount">
+                                                {{ formatMoneyPersian($categoryTotal->total) }} تومان
+                                            </div>
                                         </div>
-                                        <div class="category-amount">
-                                            {{ formatMoneyPersian($categoryTotal->total) }} تومان
+                                        <div class="category-track">
+                                            <div class="category-bar" style="width: {{ $percentage }}%;"></div>
                                         </div>
                                     </div>
-                                    <div class="category-track">
-                                        <div class="category-bar" style="width: {{ $percentage }}%;"></div>
-                                    </div>
-                                </div>
-                                <div class="sub-category-container"
-                                     id="sub-category-{{ $categoryTotal->category_id }}"
-                                     style=" display: none; padding: 10px 15px 0 0">
+                                    <div class="sub-category-container"
+                                         id="sub-category-{{ $categoryTotal->category_id }}"
+                                         style=" display: none; padding: 10px 15px 0 0">
 
+                                    </div>
                                 </div>
-                            </div>
-                        @endif
-                    @endforeach
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
             </div>
         @endif
@@ -180,6 +183,9 @@
                         </table>
                     </div>
                     <div id="omran-fields-container"></div>
+                    <div class="tool-details-container" id="tool-details-container">
+
+                    </div>
 
                 </div>
             </div>
@@ -290,6 +296,7 @@
                     $('#omran-fields-container').empty();
                     $('#details-tbody').empty();
                     $('#detail-table').hide();
+                    $('#tool-details-container').empty().hide();
 
 
                     $.ajax({
@@ -316,7 +323,36 @@
                     break;
 
 
+                case 5:
+                $("#detail-placeholder").hide();
+                $('#details-loading').show();
+                $('#tool-details-container').empty();
+
+                $('#omran-fields-container').empty();
+                $('.sub-category-container').slideUp(300);
+
+                $.ajax({
+                    url: '/fetchTools',
+                    type: 'GET',
+                    success: function (response){
+                        $('#details-loading').hide();
+                        response.totalSectionAmount.forEach(item => {
+                            $('#tool-details-container').append(
+                                `<div class="tool-detail">
+                                    <div class="tool-name">${item.name}</div>
+                                    <div class="tool-amount">${toPersianDigitsJS(item.total_amount)}</div>
+                                </div>`
+                            );
+                        });
+                        $('#tool-details-container').show();
+                    },
+                });
+
+                break;
+
+
                 case 6:
+                    $('#tool-details-container').empty().hide();
                     if(subContainer.children().length > 0){
                         subContainer.slideToggle(300);
                         $('#omran-fields-container').empty();
@@ -361,6 +397,7 @@
                 default:
                     // برای سایر دسته‌بندی‌ها
                     $('.sub-category-container').slideUp(300);
+                    $('#tool-details-container').empty().hide();
                     $('#detail-placeholder').text('هیچ داده ای برای این بخش یافت نشد').show();
                     break;
             }
@@ -374,6 +411,7 @@
             $('#detail-placeholder').hide();
             $('#details-loading').show();
             $('#detail-table').hide();
+            $('#tool-details-container').empty().hide();
 
             $.ajax({
                 url: '/expenses/OmranFieldTotals/' + sectionId,
