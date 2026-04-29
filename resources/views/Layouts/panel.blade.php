@@ -20,7 +20,6 @@
 
 
 <body>
-hello
 <!-- Modal correctly placed inside body -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -507,7 +506,6 @@ hello
             buttons: [
                 { extend: 'copy', text: 'کپی', className: 'btn' },
                 { extend: 'excel', text: 'اکسل', className: 'btn' },
-                /*{ extend: 'print', text: 'چاپ', className: 'btn' }*/
                 {
                     extend: 'print',
                     text: 'چاپ',
@@ -515,6 +513,8 @@ hello
 
                     customize: function (win){
                         let api = $('#expenses-table').DataTable();
+                        let searchValue = api.search();
+
                         let data = api.column(3, {search: 'applied'}).data();
 
                         let n1, noHtml, parsed, removeCommas;
@@ -533,13 +533,34 @@ hello
                         });
 
                         let persianDigits = toPersianDigitsJS(total);
-                        $(win.document.body).append(
+                        $(win.document.body)
+                            .append(
                             '<div style="text-align: center; margin-top: 40px; direction: rtl;">' +
                             '<div style="display: inline-block; border: 2px solid #000; padding: 15px 50px; border-radius: 8px;">' +
                             '<h3 style="margin: 0; font-size: 24px;">مبلغ کل: ' + persianDigits + '</h3>' +
                             '</div>' +
                             '</div>'
                         );
+
+                        $(win.document.body).css({
+                            'direction': 'rtl',
+                            'text-align': 'center',
+                            'margin': '20px'
+                        });
+
+                        // fix header alignment
+                        $(win.document.body).find('h1').css({
+                            'text-align': 'center',
+                            'margin-bottom': '25px',
+                            'width': '100%'
+                        });
+
+                        // fix table alignment
+                        $(win.document.body).find('table').css({
+                            'margin': '0 auto',
+                            'width': '90%',
+                            'border-collapse': 'collapse'
+                        });
 
 
                     }
