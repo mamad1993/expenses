@@ -497,7 +497,9 @@
 
         });
 
-
+        function faToEn(str) {
+            return str.replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+        }
 
         // Initialize DataTable
         const table = $('#expenses-table').DataTable({
@@ -505,7 +507,46 @@
             buttons: [
                 { extend: 'copy', text: 'کپی', className: 'btn' },
                 { extend: 'excel', text: 'اکسل', className: 'btn' },
-                { extend: 'print', text: 'چاپ', className: 'btn' }
+                /*{ extend: 'print', text: 'چاپ', className: 'btn' }*/
+                {
+                    extend: 'print',
+                    text: 'چاپ',
+                    className: 'btn',
+
+                    customize: function (win){
+                        let api = $('#expenses-table').DataTable();
+                        let data = api.column(3, {search: 'applied'}).data();
+
+                        let n1, noHtml, parsed, removeCommas;
+                        let total = 0;
+
+                        data.each(function (value){
+                            n1 = faToEn(value);
+
+                            removeCommas = n1.replace(/,/g, '');
+
+                            noHtml = removeCommas.replace(/<[^>]*>/g, "");
+
+                            parsed = parseFloat(noHtml);
+
+                            total += parsed;
+                        });
+
+                        let persianDigits = toPersianDigitsJS(total);
+                        $(win.document.body).append(
+                            '<div style="text-align: center; margin-top: 40px; direction: rtl;">' +
+                            '<div style="display: inline-block; border: 2px solid #000; padding: 15px 50px; border-radius: 8px;">' +
+                            '<h3 style="margin: 0; font-size: 24px;">مبلغ کل: ' + persianDigits + '</h3>' +
+                            '</div>' +
+                            '</div>'
+                        );
+
+
+                    }
+
+
+                },
+
             ],
             responsive: true,
             ordering: true,
@@ -540,6 +581,8 @@
                 },
             ],
         });
+
+
 
         // Initialize Bootstrap Modal
         const imageModal = new bootstrap.Modal(document.getElementById('imageModal'), {
