@@ -13,11 +13,14 @@
     <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
+    <link rel="stylesheet" href="/dist/jalalidatepicker.min.css">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
+<style>
 
+</style>
 
 <body>
 <!-- Modal correctly placed inside body -->
@@ -192,6 +195,9 @@
 
     </div>
 
+
+
+
     <div class="content-card">
         <div class="content-card-header">
             <i class="fas fa-table"></i>
@@ -220,7 +226,9 @@
                         <td>
                             <span class="amount-highlight">{{ formatMoneyPersian($expense->amount) }}</span>
                         </td>
-                        <td>{{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}</td>
+                        <td data-gdate="{{ $expense->created_at->format('Y-m-d') }}">
+                            {{ toPersianDigits(\Morilog\Jalali\Jalalian::fromDateTime($expense->created_at)->format('Y/m/d')) }}
+                        </td>
                         <td class="text-muted">{{ $expense->note ?: '-' }}</td>
                     </tr>
                 @endforeach
@@ -249,9 +257,58 @@
 <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="/dist/jalalidatepicker.min.js"></script>
 
 <script>
     $(document).ready(function (){
+
+
+
+        function jalaliToGregorian(jDate) {
+
+            let parts = jDate.split('/');
+            let jy = parseInt(parts[0]);
+            let jm = parseInt(parts[1]);
+            let jd = parseInt(parts[2]);
+
+            jy += 1595;
+            let days = -355668 + (365 * jy) + Math.floor(jy / 33) * 8 + Math.floor(((jy % 33) + 3) / 4)
+                + jd + (jm < 7 ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+
+            let gy = 400 * Math.floor(days / 146097);
+            days %= 146097;
+
+            if (days > 36524) {
+                gy += 100 * Math.floor(--days / 36524);
+                days %= 36524;
+                if (days >= 365) days++;
+            }
+
+            gy += 4 * Math.floor(days / 1461);
+            days %= 1461;
+
+            if (days > 365) {
+                gy += Math.floor((days - 1) / 365);
+                days = (days - 1) % 365;
+            }
+
+            let gd = days + 1;
+
+            let sal_a = [0,31,(gy%4==0 && gy%100!=0)||gy%400==0?29:28,31,30,31,30,31,31,30,31,30,31];
+
+            let gm;
+            for (gm = 0; gm < 13; gm++) {
+                let v = sal_a[gm];
+                if (gd <= v) break;
+                gd -= v;
+            }
+
+            gm = gm.toString().padStart(2,'0');
+            gd = gd.toString().padStart(2,'0');
+
+            return gy + "-" + gm + "-" + gd;
+        }
+
 
         function normalizeEnglishDigits(str){
             if (!str) return '';
@@ -500,7 +557,9 @@
             return str.replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
         }
 
-        // Initialize DataTable
+
+
+
         const table = $('#expenses-table').DataTable({
             dom: '<"d-flex justify-content-between align-items-center mb-4"<"d-flex align-items-center"B><"d-flex align-items-center"f>>rtip',
             buttons: [
@@ -510,10 +569,13 @@
                     extend: 'print',
                     text: 'چاپ',
                     className: 'btn',
+                    exportOptions: {
+                        columns: ':not(:first-child)'
+                    },
+
 
                     customize: function (win){
                         let api = $('#expenses-table').DataTable();
-                        let searchValue = api.search();
 
                         let data = api.column(3, {search: 'applied'}).data();
 
@@ -533,8 +595,7 @@
                         });
 
                         let persianDigits = toPersianDigitsJS(total);
-                        $(win.document.body)
-                            .append(
+                        $(win.document.body).append(
                             '<div style="text-align: center; margin-top: 40px; direction: rtl;">' +
                             '<div style="display: inline-block; border: 2px solid #000; padding: 15px 50px; border-radius: 8px;">' +
                             '<h3 style="margin: 0; font-size: 24px;">مبلغ کل: ' + persianDigits + '</h3>' +
@@ -548,14 +609,14 @@
                             'margin': '20px'
                         });
 
-                        // fix header alignment
+
                         $(win.document.body).find('h1').css({
                             'text-align': 'center',
                             'margin-bottom': '25px',
                             'width': '100%'
                         });
 
-                        // fix table alignment
+
                         $(win.document.body).find('table').css({
                             'margin': '0 auto',
                             'width': '90%',
@@ -567,6 +628,7 @@
 
 
                 },
+
 
             ],
             responsive: true,
@@ -602,6 +664,54 @@
                 },
             ],
         });
+
+        $('.main-wrapper .d-flex.justify-content-between.align-items-center.mb-4').after(
+            `
+            <div class="date-filters text-right">
+
+                    <label for="">از تاریخ</label>
+                    <input id="fromDate" class="form-control d-inline-block" style="width: 130px" data-jdp>
+
+                    <label for="">تا تاریخ</label>
+                    <input id="toDate" class="form-control d-inline-block" style="width: 130px" data-jdp>
+            </div>
+            `
+        );
+
+        jalaliDatepicker.startWatch({
+            persianDigits: true,
+
+        });
+
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+
+            let from = $('#fromDate').val();
+            let to   = $('#toDate').val();
+
+            if (!from && !to) return true;
+
+            let rowNode = table.row(dataIndex).node();
+            let rowDate = $(rowNode).find('td').eq(4).data('gdate');
+
+            if (!rowDate) return true;
+
+            if (from) from = jalaliToGregorian(from);
+            if (to)   to   = jalaliToGregorian(to);
+
+            if (from && rowDate < from) return false;
+            if (to && rowDate > to) return false;
+
+            return true;
+        });
+
+
+
+        $('#fromDate, #toDate').on('change', function () {
+            table.draw();
+        });
+
+
+
 
 
 
